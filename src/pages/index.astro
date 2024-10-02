@@ -168,7 +168,7 @@ const data = await response.json()
 				settings.events = settings.events
 					? [...settings.events, eventToAdd]
 					: [eventToAdd];
-				const saveSettingsJSON = await postData(
+				const saveSettingsJSON = await postRequest(
 					`/api/sessions`,
 					settings,
 				);

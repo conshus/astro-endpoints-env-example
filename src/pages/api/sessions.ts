@@ -26,8 +26,8 @@ export const GET: APIRoute = async () => {
 
 
 export const POST: APIRoute = async ({ request }) => {
-
-  const base64newSessions = Buffer.from(request.body).toString('base64');
+  const data = await request.json();
+  const base64newSessions = Buffer.from(data.body).toString('base64');
 
   const originalFile = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
     owner: 'conshus',
