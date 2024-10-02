@@ -13,7 +13,7 @@ const data = await response.json()
 <Layout title="Welcome to Astro.">
 	<main>
 	<h1>{data.greeting} world!</h1>
-		<svg
+		<!-- <svg
 			class="astro-a"
 			width="495"
 			height="623"
@@ -67,37 +67,128 @@ const data = await response.json()
 				title="Community"
 				body="Come say hi to our amazing Discord community. ❤️"
 			/>
-		</ul>
+		</ul> -->
 		<label>
 			password <input type="password" id="password"/> <button id="enter">enter</button>
 		</label>
+		<div id="event-form">
+			<fieldset>
+				<legend>Add an event</legend>
+				<label for="title">Title:</label>
+				<br />
+				<input id="title" required />
+				<br />
+				<label for="description">Description:</label>
+				<br />
+				<textarea id="description" required></textarea>
+				<br /><br />
+				<label for="datetime">Date and Time:</label>
+				<br />
+				<input type="datetime-local" id="datetime" required />
+				<br /><br />
+				<button id="add-event-button">add event</button>
+				<br />Status: <span id="event-status"></span>
+			</fieldset>
+		</div>
+
 	</main>
 </Layout>
 
-<script>
+<script is:inline>
 	const passwordInput = document.querySelector("#password");
 	const enterBtn = document.querySelector("#enter");
 
+	// event form
+	const title = document.querySelector("#title");
+	const description = document.querySelector("#description");
+	const datetimeInput = document.querySelector("#datetime");
+	const addEventBtn = document.querySelector("#add-event-button");
+	const deleteEventBtn = document.querySelector("#delete-event-button");
+	const eventStatus = document.querySelector("#event-status");
+
+	let events = [];
+	let settings = {};
+	let timeInMs;
+	let archives = [];
+
+
 	async function postRequest(endpoint = '', data = {}) {
-  try {
-    const response = await fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        // Authorization: `Bearer ${jwt}`,
-        // 'Bypass-Tunnel-Reminder': true, // used for localtunnel only
-      },
-      body: JSON.stringify(data), // body data type must match "Content-Type" header
-    });
-    if (!response.ok) {
-      throw await response.json();
-    }
-    return response.json();
-  } catch (error) {
-    console.error('postRequest error: ', error);
-    throw error;
-  }
-}
+		try {
+			const response = await fetch(endpoint, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					// Authorization: `Bearer ${jwt}`,
+					// 'Bypass-Tunnel-Reminder': true, // used for localtunnel only
+				},
+				body: JSON.stringify(data), // body data type must match "Content-Type" header
+			});
+			if (!response.ok) {
+				throw await response.json();
+			}
+			return response.json();
+		} catch (error) {
+			console.error('postRequest error: ', error);
+			throw error;
+		}
+	}
+
+	// Timezone stuff
+	function handleDateTimeChange() {
+		const timezoneHr = Math.trunc(-(new Date().getTimezoneOffset() / 60));
+		const sign = timezoneHr < 0 ? "-" : "+";
+		const timezoneMin = new Date().getTimezoneOffset() % 60;
+		const timezoneString = `${sign}${Math.abs(timezoneHr) < 10
+				? "0" + Math.abs(timezoneHr)
+				: Math.abs(timezoneHr)
+			}${timezoneMin === 0 ? "00" : Math.abs(timezoneMin)}`;
+		const newDate = new Date(`${datetimeInput.value}${timezoneString}`);
+		timeInMs = Date.parse(newDate);
+		console.log("timeInMs: ", timeInMs);
+	}
+
+	async function handleAddEvent() {
+		if (title.value !== "" && description.value !== "" && timeInMs) {
+			try {
+				eventStatus.textContent = "generating credentials...";
+				// const credsResponse = await fetch(
+				// 	`/.netlify/functions/generate_creds`,
+				// );
+				// const credsJSON = await credsResponse.json();
+				eventStatus.textContent = "saving event...";
+				const eventToAdd = {
+					title: title.value,
+					description: description.value,
+					timeInMs,
+					// applicationId: credsJSON.applicationId,
+					// sessionId: credsJSON.sessionId,
+					// conversationId: credsJSON.conversationId,
+				};
+
+				settings.events = settings.events
+					? [...settings.events, eventToAdd]
+					: [eventToAdd];
+				const saveSettingsJSON = await postData(
+					`/api/sessions`,
+					settings,
+				);
+				events = settings.events;
+				eventStatus.textContent = "successfully saved!";
+				title.value = "";
+				description.value = "";
+				setTimeout(() => {
+					eventStatus.textContent = "";
+				}, 1000);
+
+				loadEvents();
+			} catch (error) {
+				// status = error;
+				console.error("Error adding event:", error);
+				eventStatus.textContent = error.toString();
+			}
+		}
+	}
+
 
 
 	enterBtn.addEventListener("click",async (event)=>{
@@ -116,6 +207,9 @@ const data = await response.json()
       }
 
 	})
+
+	datetimeInput.addEventListener("change", handleDateTimeChange, false);
+	addEventBtn.addEventListener("click", handleAddEvent, false);
 </script>
 
 <style>
