@@ -1,3 +1,4 @@
+declare const Buffer
 import type { APIRoute } from 'astro';
 const { GITHUB_PAT } = import.meta.env;
 import { Octokit } from "@octokit/core";
@@ -13,7 +14,7 @@ export const GET: APIRoute = async () => {
         }
     });
 
-    const sessionsContent = Buffer.from(originalFile.data.content, "base64").toString();
+    const sessionsContent = Buffer.from(originalFile.data['content'], "base64").toString();
 
 
     return new Response(
