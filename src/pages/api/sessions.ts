@@ -1,13 +1,13 @@
 declare const Buffer
 import type { APIRoute } from 'astro';
-const { GITHUB_PAT } = import.meta.env;
+const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = import.meta.env;
 import { Octokit } from "@octokit/core";
 const octokit = new Octokit({ auth: GITHUB_PAT });
 
 export const GET: APIRoute = async () => {
   const originalFile = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-      owner: 'conshus',
-      repo: 'astro-endpoints-env-example',
+      owner: GITHUB_USERNAME,
+      repo: GITHUB_REPO,
       path: 'sessions.json',
       headers: {
           'X-GitHub-Api-Version': '2022-11-28'
@@ -30,8 +30,8 @@ export const POST: APIRoute = async ({ request }) => {
   const base64newSessions = Buffer.from(JSON.stringify(body.events)).toString('base64');
 
   const originalFile = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
-    owner: 'conshus',
-    repo: 'astro-endpoints-env-example',
+    owner: GITHUB_USERNAME,
+    repo: GITHUB_REPO,
     path: 'sessions.json',
     headers: {
         'X-GitHub-Api-Version': '2022-11-28'
@@ -42,18 +42,18 @@ export const POST: APIRoute = async ({ request }) => {
 
   // update file with new data
   await octokit.request("PUT /repos/{owner}/{repo}/contents/{path}", {
-    owner: 'conshus',
-    repo: 'astro-endpoints-env-example',
-    path: "sessions.json",
+    owner: GITHUB_USERNAME,
+    repo: GITHUB_REPO,
+    path: 'sessions.json',
     message: `updates sessions - ${Date.now()}`,
     committer: {
-      name: "Dwane Hemmings",
+      name: 'Dwane Hemmings',
       email: 'hey@dwane.io',
     },
     content: base64newSessions,
     sha: originalFileSHA,
     headers: {
-      "X-GitHub-Api-Version": "2022-11-28",
+      'X-GitHub-Api-Version': '2022-11-28',
     },
   });
 
