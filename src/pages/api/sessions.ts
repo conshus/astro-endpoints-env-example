@@ -1,6 +1,8 @@
 declare const Buffer
 import type { APIRoute } from 'astro';
-const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = import.meta.env;
+import { env } from '../../utils/env.js'
+// const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = import.meta.env;
+const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = env;
 import { Octokit } from "@octokit/core";
 const octokit = new Octokit({ auth: GITHUB_PAT });
 
