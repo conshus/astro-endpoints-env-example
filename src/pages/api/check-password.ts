@@ -1,8 +1,8 @@
 import type { APIRoute } from 'astro';
-import { env } from '../../utils/env.js'
+// import { env } from '../../utils/env.js'
+// const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = env;
 
-// const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = import.meta.env;
-const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = env;
+const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = import.meta.env;
 
 
 export const GET: APIRoute = () => {
