@@ -1,7 +1,7 @@
 export const prerender = false; //This will not work without this line
 
 import type { APIRoute } from "astro";
-import { env } from "../../utils/env.js";
+// import { env } from "../../utils/env.js";
 // const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = env;
 
 // const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = import.meta.env;
@@ -14,15 +14,15 @@ export const GET: APIRoute = () => {
   );
 };
 
-export const POST: APIRoute = async ({ request, env }) => {
+export const POST: APIRoute = async ({ request }) => {
   // console.log('post req: ', await request.json());
   const data = await request.json();
   const password = data.password;
   const role = data.role.toLowerCase();
   let authorized = false;
-  const ADMIN_PASSWORD = "admin";
+  const ADMIN_PASSWORD = import.meta.env.ADMIN_PASSWORD;
   // console.log("ADMIN_PASSWORD: ", ADMIN_PASSWORD);
-  console.log("env: ", env);
+  console.log("import.meta.env: ", import.meta.env);
   switch (role) {
     case "admin":
       authorized = password === ADMIN_PASSWORD;
