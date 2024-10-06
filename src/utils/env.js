@@ -29,4 +29,15 @@ if (import.meta.env.DEV) {
   env = process.env;
 }
 
+export function getEnvs(locals, context) {
+  console.log("function getEnvs!!");
+  if (import.meta.env.DEV) {
+    console.log("in development mode");
+    console.log({ locals, context });
+    return import.meta.env;
+  } else if (locals.runtime.env.CF_PAGES) {
+    console.log("on cloudflare");
+    return locals.runtime.env;
+  }
+}
 // export env

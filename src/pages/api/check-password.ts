@@ -8,8 +8,12 @@ import type { APIRoute } from "astro";
 
 // console.log("hopefully this shows up: ", context.locals.runtime.env);
 
+import { getEnvs } from "../../utils/env.js";
+
 export const GET: APIRoute = (context) => {
   console.log("context.locals.runtime: ", context.locals.runtime);
+  const env = getEnvs();
+  console.log("env: ", env);
   return new Response(
     JSON.stringify({
       greeting: "Hello",
@@ -23,12 +27,16 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const password = data.password;
   const role = data.role.toLowerCase();
   let authorized = false;
-  const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = locals.runtime.env;
+  // const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = locals.runtime.env;
   // const ADMIN_PASSWORD = import.meta.env.ADMIN_PASSWORD;
   // console.log("ADMIN_PASSWORD: ", ADMIN_PASSWORD);
-  console.log("import.meta.env: ", import.meta.env);
-  console.log("process.env: ", process.env);
-  console.log("context.locals.runtime: ", locals.runtime.env);
+  // console.log("import.meta.env: ", import.meta.env);
+  // console.log("process.env: ", process.env);
+  // console.log("context.locals.runtime: ", locals.runtime.env);
+  // const env = getEnvs(locals);
+  // console.log("env: ", env);
+  const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
+
   switch (role) {
     case "admin":
       authorized = password === ADMIN_PASSWORD;
