@@ -6,7 +6,7 @@ import type { APIRoute } from "astro";
 
 // const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = import.meta.env;
 
-console.log("hopefully this shows up: ", context.locals.runtime.env);
+// console.log("hopefully this shows up: ", context.locals.runtime.env);
 
 export const GET: APIRoute = (context) => {
   console.log("context.locals.runtime: ", context.locals.runtime);
