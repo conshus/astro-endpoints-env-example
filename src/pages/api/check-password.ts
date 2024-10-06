@@ -11,8 +11,9 @@ import type { APIRoute } from "astro";
 import { getEnvs } from "../../utils/env.js";
 
 export const GET: APIRoute = (context) => {
-  console.log("context.locals.runtime: ", context.locals.runtime);
-  const env = getEnvs();
+  // console.log("context.locals.runtime: ", context.locals.runtime);
+  const locals = context.locals;
+  const env = getEnvs(locals);
   console.log("env: ", env);
   return new Response(
     JSON.stringify({
