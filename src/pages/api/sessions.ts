@@ -19,9 +19,11 @@ async function getBuffer() {
 
   try {
     const { Buffer } = await import("node:buffer");
+    console.log("Buffer on Cloudflare!");
     return Buffer;
   } catch (error) {
     // Handle the case where 'buffer' is not available
+    console.log("no Buffer on Cloudflare");
     return Uint8Array;
   }
 }
