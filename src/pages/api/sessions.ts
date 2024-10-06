@@ -1,6 +1,7 @@
 // declare const Buffer;
 // if (!Buffer) {
 //   console.log("no Buffer!");
+export const prerender = false;
 import { Buffer } from "node:buffer";
 // }
 import type { APIRoute } from "astro";
