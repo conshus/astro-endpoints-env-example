@@ -1,4 +1,8 @@
-declare const Buffer;
+// declare const Buffer;
+// if (!Buffer) {
+//   console.log("no Buffer!");
+//   import { Buffer } from "node:buffer";
+// }
 import type { APIRoute } from "astro";
 // import { env } from '../../utils/env.js'
 // const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = env;
@@ -8,7 +12,22 @@ import { getEnvs } from "../../utils/env.js";
 import { Octokit } from "@octokit/core";
 // const octokit = new Octokit({ auth: GITHUB_PAT });
 
+async function getBuffer() {
+  if (typeof Buffer !== "undefined") {
+    return Buffer; // Already available globally
+  }
+
+  try {
+    const { Buffer } = await import("node:buffer");
+    return Buffer;
+  } catch (error) {
+    // Handle the case where 'buffer' is not available
+    return Uint8Array;
+  }
+}
+
 export const GET: APIRoute = async (context) => {
+  const Buffer = await getBuffer();
   const locals = context.locals;
   // const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = context.locals.runtime.env;
   const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = getEnvs(locals);
@@ -39,6 +58,7 @@ export const GET: APIRoute = async (context) => {
 };
 
 export const POST: APIRoute = async ({ request, locals }) => {
+  const Buffer = await getBuffer();
   const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = getEnvs(locals);
   const octokit = new Octokit({ auth: GITHUB_PAT });
 
