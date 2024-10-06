@@ -23,6 +23,7 @@ export const POST: APIRoute = async ({ request }) => {
   const ADMIN_PASSWORD = import.meta.env.ADMIN_PASSWORD;
   // console.log("ADMIN_PASSWORD: ", ADMIN_PASSWORD);
   console.log("import.meta.env: ", import.meta.env);
+  console.log("process.env: ", process.env);
   switch (role) {
     case "admin":
       authorized = password === ADMIN_PASSWORD;
