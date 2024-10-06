@@ -6,6 +6,8 @@ import type { APIRoute } from "astro";
 
 // const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = import.meta.env;
 
+console.log("hopefully this shows up: ", context.locals.runtime.env);
+
 export const GET: APIRoute = (context) => {
   console.log("context.locals.runtime: ", context.locals.runtime);
   return new Response(
@@ -26,6 +28,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   // console.log("ADMIN_PASSWORD: ", ADMIN_PASSWORD);
   console.log("import.meta.env: ", import.meta.env);
   console.log("process.env: ", process.env);
+  console.log("context.locals.runtime: ", locals.runtime.env);
   switch (role) {
     case "admin":
       authorized = password === ADMIN_PASSWORD;
