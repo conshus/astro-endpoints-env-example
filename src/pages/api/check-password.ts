@@ -15,13 +15,14 @@ export const GET: APIRoute = (context) => {
   );
 };
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
   // console.log('post req: ', await request.json());
   const data = await request.json();
   const password = data.password;
   const role = data.role.toLowerCase();
   let authorized = false;
-  const ADMIN_PASSWORD = import.meta.env.ADMIN_PASSWORD;
+  const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = locals.runtime.env;
+  // const ADMIN_PASSWORD = import.meta.env.ADMIN_PASSWORD;
   // console.log("ADMIN_PASSWORD: ", ADMIN_PASSWORD);
   console.log("import.meta.env: ", import.meta.env);
   console.log("process.env: ", process.env);
