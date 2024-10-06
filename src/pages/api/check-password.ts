@@ -21,6 +21,7 @@ export const POST: APIRoute = async ({ request }) => {
   const role = data.role.toLowerCase();
   let authorized = false;
   // const ADMIN_PASSWORD = "admin";
+  console.log("ADMIN_PASSWORD: ", ADMIN_PASSWORD);
   switch (role) {
     case "admin":
       authorized = password === ADMIN_PASSWORD;
