@@ -48,10 +48,12 @@ export const GET: APIRoute = async (context) => {
     }
   );
 
-  const sessionsContent = Buffer.from(
-    originalFile.data["content"],
-    "base64"
-  ).toString();
+  // const sessionsContent = Buffer.from(
+  //   originalFile.data["content"],
+  //   "base64"
+  // ).toString();
+
+  const sessionsContent = atob(originalFile.data["content"]);
 
   return new Response(
     JSON.stringify({
