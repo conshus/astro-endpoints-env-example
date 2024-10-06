@@ -1,19 +1,20 @@
 ---
-import Layout from '../layouts/Layout.astro';
-import Card from '../components/Card.astro';
+import Layout from "../layouts/Layout.astro";
+import Card from "../components/Card.astro";
 
-import { GET } from './api/check-password.ts';
+import { GET } from "./api/check-password.ts";
 console.log("DB_PASSWORD: ", import.meta.env.DB_PASSWORD);
 
-let response = await GET(Astro)
-const data = await response.json()
-
+let response = await GET(Astro);
+const data = await response.json();
+const db = import.meta.env.DB_PASSWORD;
 ---
 
 <Layout title="Welcome to Astro.">
-	<main>
-	<h1>{data.greeting} world!</h1>
-		<!-- <svg
+  <main>
+    <h1>{data.greeting} world!!</h1>
+    <h2>{db}</h2>
+    <!-- <svg
 			class="astro-a"
 			width="495"
 			height="623"
@@ -68,205 +69,202 @@ const data = await response.json()
 				body="Come say hi to our amazing Discord community. ❤️"
 			/>
 		</ul> -->
-		<label>
-			password <input type="password" id="password"/> <button id="enter">enter</button>
-		</label>
-		<div id="event-form">
-			<fieldset>
-				<legend>Add an event</legend>
-				<label for="title">Title:</label>
-				<br />
-				<input id="title" required />
-				<br />
-				<label for="description">Description:</label>
-				<br />
-				<textarea id="description" required></textarea>
-				<br /><br />
-				<label for="datetime">Date and Time:</label>
-				<br />
-				<input type="datetime-local" id="datetime" required />
-				<br /><br />
-				<button id="add-event-button">add event</button>
-				<br />Status: <span id="event-status"></span>
-			</fieldset>
-		</div>
-
-	</main>
+    <label>
+      password <input type="password" id="password" />
+      <button id="enter">enter</button>
+    </label>
+    <div id="event-form">
+      <fieldset>
+        <legend>Add an event</legend>
+        <label for="title">Title:</label>
+        <br />
+        <input id="title" required />
+        <br />
+        <label for="description">Description:</label>
+        <br />
+        <textarea id="description" required></textarea>
+        <br /><br />
+        <label for="datetime">Date and Time:</label>
+        <br />
+        <input type="datetime-local" id="datetime" required />
+        <br /><br />
+        <button id="add-event-button">add event</button>
+        <br />Status: <span id="event-status"></span>
+      </fieldset>
+    </div>
+  </main>
 </Layout>
 
 <script is:inline>
-	const passwordInput = document.querySelector("#password");
-	const enterBtn = document.querySelector("#enter");
+  const passwordInput = document.querySelector("#password");
+  const enterBtn = document.querySelector("#enter");
 
-	// event form
-	const title = document.querySelector("#title");
-	const description = document.querySelector("#description");
-	const datetimeInput = document.querySelector("#datetime");
-	const addEventBtn = document.querySelector("#add-event-button");
-	const deleteEventBtn = document.querySelector("#delete-event-button");
-	const eventStatus = document.querySelector("#event-status");
+  // event form
+  const title = document.querySelector("#title");
+  const description = document.querySelector("#description");
+  const datetimeInput = document.querySelector("#datetime");
+  const addEventBtn = document.querySelector("#add-event-button");
+  const deleteEventBtn = document.querySelector("#delete-event-button");
+  const eventStatus = document.querySelector("#event-status");
 
-	let events = [];
-	let settings = {};
-	let timeInMs;
-	let archives = [];
+  let events = [];
+  let settings = {};
+  let timeInMs;
+  let archives = [];
 
-
-	async function postRequest(endpoint = '', data = {}) {
-		try {
-			const response = await fetch(endpoint, {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json',
-					// Authorization: `Bearer ${jwt}`,
-					// 'Bypass-Tunnel-Reminder': true, // used for localtunnel only
-				},
-				body: JSON.stringify(data), // body data type must match "Content-Type" header
-			});
-			if (!response.ok) {
-				throw await response.json();
-			}
-			return response.json();
-		} catch (error) {
-			console.error('postRequest error: ', error);
-			throw error;
-		}
-	}
-
-	// Timezone stuff
-	function handleDateTimeChange() {
-		const timezoneHr = Math.trunc(-(new Date().getTimezoneOffset() / 60));
-		const sign = timezoneHr < 0 ? "-" : "+";
-		const timezoneMin = new Date().getTimezoneOffset() % 60;
-		const timezoneString = `${sign}${Math.abs(timezoneHr) < 10
-				? "0" + Math.abs(timezoneHr)
-				: Math.abs(timezoneHr)
-			}${timezoneMin === 0 ? "00" : Math.abs(timezoneMin)}`;
-		const newDate = new Date(`${datetimeInput.value}${timezoneString}`);
-		timeInMs = Date.parse(newDate);
-		console.log("timeInMs: ", timeInMs);
-	}
-
-	async function handleAddEvent() {
-		if (title.value !== "" && description.value !== "" && timeInMs) {
-			try {
-				eventStatus.textContent = "generating credentials...";
-				// const credsResponse = await fetch(
-				// 	`/.netlify/functions/generate_creds`,
-				// );
-				// const credsJSON = await credsResponse.json();
-				eventStatus.textContent = "saving event...";
-				const eventToAdd = {
-					title: title.value,
-					description: description.value,
-					timeInMs,
-					// applicationId: credsJSON.applicationId,
-					// sessionId: credsJSON.sessionId,
-					// conversationId: credsJSON.conversationId,
-				};
-
-				settings.events = settings.events
-					? [...settings.events, eventToAdd]
-					: [eventToAdd];
-				const saveSettingsJSON = await postRequest(
-					`/api/sessions`,
-					settings,
-				);
-				events = settings.events;
-				eventStatus.textContent = "successfully saved!";
-				title.value = "";
-				description.value = "";
-				setTimeout(() => {
-					eventStatus.textContent = "";
-				}, 1000);
-
-				// loadEvents();
-			} catch (error) {
-				// status = error;
-				console.error("Error adding event:", error);
-				eventStatus.textContent = error.toString();
-			}
-		}
-	}
-
-
-
-	enterBtn.addEventListener("click",async (event)=>{
-		event.preventDefault();
-		console.log("enter click: ", passwordInput.value);
-		      try {
-        const bodyData = {
-					role: 'admin',
-          password: passwordInput.value,
-        };
-        const data = await postRequest('/api/check-password', bodyData);
-				console.log("data: ", data);
-      } catch (error) {
-        console.error('log in error: ', error);
-        // displayError(loginSignupStatus, error);
+  async function postRequest(endpoint = "", data = {}) {
+    try {
+      const response = await fetch(endpoint, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Authorization: `Bearer ${jwt}`,
+          // 'Bypass-Tunnel-Reminder': true, // used for localtunnel only
+        },
+        body: JSON.stringify(data), // body data type must match "Content-Type" header
+      });
+      if (!response.ok) {
+        throw await response.json();
       }
+      return response.json();
+    } catch (error) {
+      console.error("postRequest error: ", error);
+      throw error;
+    }
+  }
 
-	})
+  // Timezone stuff
+  function handleDateTimeChange() {
+    const timezoneHr = Math.trunc(-(new Date().getTimezoneOffset() / 60));
+    const sign = timezoneHr < 0 ? "-" : "+";
+    const timezoneMin = new Date().getTimezoneOffset() % 60;
+    const timezoneString = `${sign}${
+      Math.abs(timezoneHr) < 10
+        ? "0" + Math.abs(timezoneHr)
+        : Math.abs(timezoneHr)
+    }${timezoneMin === 0 ? "00" : Math.abs(timezoneMin)}`;
+    const newDate = new Date(`${datetimeInput.value}${timezoneString}`);
+    timeInMs = Date.parse(newDate);
+    console.log("timeInMs: ", timeInMs);
+  }
 
-	datetimeInput.addEventListener("change", handleDateTimeChange, false);
-	addEventBtn.addEventListener("click", handleAddEvent, false);
+  async function handleAddEvent() {
+    if (title.value !== "" && description.value !== "" && timeInMs) {
+      try {
+        eventStatus.textContent = "generating credentials...";
+        // const credsResponse = await fetch(
+        // 	`/.netlify/functions/generate_creds`,
+        // );
+        // const credsJSON = await credsResponse.json();
+        eventStatus.textContent = "saving event...";
+        const eventToAdd = {
+          title: title.value,
+          description: description.value,
+          timeInMs,
+          // applicationId: credsJSON.applicationId,
+          // sessionId: credsJSON.sessionId,
+          // conversationId: credsJSON.conversationId,
+        };
+
+        settings.events = settings.events
+          ? [...settings.events, eventToAdd]
+          : [eventToAdd];
+        const saveSettingsJSON = await postRequest(`/api/sessions`, settings);
+        events = settings.events;
+        eventStatus.textContent = "successfully saved!";
+        title.value = "";
+        description.value = "";
+        setTimeout(() => {
+          eventStatus.textContent = "";
+        }, 1000);
+
+        // loadEvents();
+      } catch (error) {
+        // status = error;
+        console.error("Error adding event:", error);
+        eventStatus.textContent = error.toString();
+      }
+    }
+  }
+
+  enterBtn.addEventListener("click", async (event) => {
+    event.preventDefault();
+    console.log("enter click: ", passwordInput.value);
+    try {
+      const bodyData = {
+        role: "admin",
+        password: passwordInput.value,
+      };
+      const data = await postRequest("/api/check-password", bodyData);
+      console.log("data: ", data);
+    } catch (error) {
+      console.error("log in error: ", error);
+      // displayError(loginSignupStatus, error);
+    }
+  });
+
+  datetimeInput.addEventListener("change", handleDateTimeChange, false);
+  addEventBtn.addEventListener("click", handleAddEvent, false);
 </script>
 
 <style>
-	main {
-		margin: auto;
-		padding: 1rem;
-		width: 800px;
-		max-width: calc(100% - 2rem);
-		color: white;
-		font-size: 20px;
-		line-height: 1.6;
-	}
-	.astro-a {
-		position: absolute;
-		top: -32px;
-		left: 50%;
-		transform: translatex(-50%);
-		width: 220px;
-		height: auto;
-		z-index: -1;
-	}
-	h1 {
-		font-size: 4rem;
-		font-weight: 700;
-		line-height: 1;
-		text-align: center;
-		margin-bottom: 1em;
-	}
-	.text-gradient {
-		background-image: var(--accent-gradient);
-		-webkit-background-clip: text;
-		-webkit-text-fill-color: transparent;
-		background-size: 400%;
-		background-position: 0%;
-	}
-	.instructions {
-		margin-bottom: 2rem;
-		border: 1px solid rgba(var(--accent-light), 25%);
-		background: linear-gradient(rgba(var(--accent-dark), 66%), rgba(var(--accent-dark), 33%));
-		padding: 1.5rem;
-		border-radius: 8px;
-	}
-	.instructions code {
-		font-size: 0.8em;
-		font-weight: bold;
-		background: rgba(var(--accent-light), 12%);
-		color: rgb(var(--accent-light));
-		border-radius: 4px;
-		padding: 0.3em 0.4em;
-	}
-	.instructions strong {
-		color: rgb(var(--accent-light));
-	}
-	.link-card-grid {
-		display: grid;
-		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
-		gap: 2rem;
-		padding: 0;
-	}
+  main {
+    margin: auto;
+    padding: 1rem;
+    width: 800px;
+    max-width: calc(100% - 2rem);
+    color: white;
+    font-size: 20px;
+    line-height: 1.6;
+  }
+  .astro-a {
+    position: absolute;
+    top: -32px;
+    left: 50%;
+    transform: translatex(-50%);
+    width: 220px;
+    height: auto;
+    z-index: -1;
+  }
+  h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1;
+    text-align: center;
+    margin-bottom: 1em;
+  }
+  .text-gradient {
+    background-image: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-size: 400%;
+    background-position: 0%;
+  }
+  .instructions {
+    margin-bottom: 2rem;
+    border: 1px solid rgba(var(--accent-light), 25%);
+    background: linear-gradient(
+      rgba(var(--accent-dark), 66%),
+      rgba(var(--accent-dark), 33%)
+    );
+    padding: 1.5rem;
+    border-radius: 8px;
+  }
+  .instructions code {
+    font-size: 0.8em;
+    font-weight: bold;
+    background: rgba(var(--accent-light), 12%);
+    color: rgb(var(--accent-light));
+    border-radius: 4px;
+    padding: 0.3em 0.4em;
+  }
+  .instructions strong {
+    color: rgb(var(--accent-light));
+  }
+  .link-card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+    gap: 2rem;
+    padding: 0;
+  }
 </style>
