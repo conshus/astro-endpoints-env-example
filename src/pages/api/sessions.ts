@@ -3,11 +3,17 @@ import type { APIRoute } from "astro";
 // import { env } from '../../utils/env.js'
 // const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = env;
 // const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = import.meta.env;
+import { getEnvs } from "../../utils/env.js";
+
 import { Octokit } from "@octokit/core";
-const octokit = new Octokit({ auth: GITHUB_PAT });
+// const octokit = new Octokit({ auth: GITHUB_PAT });
 
 export const GET: APIRoute = async (context) => {
-  const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = locals.runtime.env;
+  const locals = context.locals;
+  // const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = context.locals.runtime.env;
+  const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = getEnvs(locals);
+  const octokit = new Octokit({ auth: GITHUB_PAT });
+
   const originalFile = await octokit.request(
     "GET /repos/{owner}/{repo}/contents/{path}",
     {
@@ -32,7 +38,10 @@ export const GET: APIRoute = async (context) => {
   );
 };
 
-export const POST: APIRoute = async ({ request }) => {
+export const POST: APIRoute = async ({ request, locals }) => {
+  const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = getEnvs(locals);
+  const octokit = new Octokit({ auth: GITHUB_PAT });
+
   const body = await request.json();
   const base64newSessions = Buffer.from(JSON.stringify(body.events)).toString(
     "base64"
