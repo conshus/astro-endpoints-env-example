@@ -1,14 +1,13 @@
-import type { APIRoute } from 'astro';
-// import { env } from '../../utils/env.js'
-// const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = env;
+import type { APIRoute } from "astro";
+import { env } from "../../utils/env.js";
+const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = env;
 
-const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = import.meta.env;
-
+// const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = import.meta.env;
 
 export const GET: APIRoute = () => {
   return new Response(
     JSON.stringify({
-      greeting: 'Hello',
+      greeting: "Hello",
     })
   );
 };
@@ -20,13 +19,13 @@ export const POST: APIRoute = async ({ request }) => {
   const role = data.role.toLowerCase();
   let authorized = false;
   switch (role) {
-    case 'admin':
+    case "admin":
       authorized = password === ADMIN_PASSWORD;
       break;
-    case 'host':
+    case "host":
       authorized = password === HOST_PASSWORD;
       break;
-    case 'guest':
+    case "guest":
       authorized = password === GUEST_PASSWORD;
       break;
     default:
