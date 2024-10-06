@@ -8,12 +8,14 @@ console.log("DB_PASSWORD: ", import.meta.env.DB_PASSWORD);
 let response = await GET(Astro);
 const data = await response.json();
 const db = import.meta.env.DB_PASSWORD;
+const db2 = process.env.DB_PASSWORD;
 ---
 
 <Layout title="Welcome to Astro.">
   <main>
     <h1>{data.greeting} world!!</h1>
     <h2>{db}</h2>
+    <h3>{db2}</h3>
     <!-- <svg
 			class="astro-a"
 			width="495"

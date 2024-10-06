@@ -1,8 +1,10 @@
-import type { APIRoute } from "astro";
-import { env } from "../../utils/env.js";
-const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = env;
+export const prerender = false; //This will not work without this line
 
-// const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = import.meta.env;
+import type { APIRoute } from "astro";
+// import { env } from "../../utils/env.js";
+// const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = env;
+
+const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = import.meta.env;
 
 export const GET: APIRoute = () => {
   return new Response(
