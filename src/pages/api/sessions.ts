@@ -2,7 +2,7 @@
 // if (!Buffer) {
 //   console.log("no Buffer!");
 export const prerender = false;
-import { Buffer } from "node:buffer";
+// import { Buffer } from "node:buffer";
 // }
 import type { APIRoute } from "astro";
 // import { env } from '../../utils/env.js'
