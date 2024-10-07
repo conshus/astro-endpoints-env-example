@@ -36,6 +36,8 @@ export function getEnvs(locals, context) {
     console.log("function getEnvs!!");
     console.log("Deno: ", Deno);
     console.log({ locals, context });
+
+    console.log("import.meta.env: ",import.meta.env);
     if (import.meta.env.DEV) {
       console.log("in development mode");
       console.log({ locals, context });
