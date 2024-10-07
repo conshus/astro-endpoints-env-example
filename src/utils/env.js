@@ -2,6 +2,12 @@
 let CF_PAGES, Deno;
 export let env;
 
+if (Deno !== undefined){
+  const denoenv = Deno.env.toObject();
+  console.log("denoenv:", denoenv);
+  
+}
+
 if (import.meta.env.DEV){
     console.log("dev mode");
     // const isDenoDeploy = Deno.env.get("DENO_DEPLOYMENT_ID") !== undefined;
