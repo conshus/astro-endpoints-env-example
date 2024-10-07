@@ -11,8 +11,8 @@ import { getEnvs } from "../../utils/env.js";
 export const GET: APIRoute = (context) => {
   // const locals = context.locals;
   // const env = getEnvs(locals);
-  const PORT = Deno.env.get("PORT");
-console.log("PORT:", PORT);
+//   const PORT = Deno.env.get("PORT");
+// console.log("PORT:", PORT);
 
   return new Response(
     JSON.stringify({
