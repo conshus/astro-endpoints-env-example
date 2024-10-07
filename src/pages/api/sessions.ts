@@ -62,15 +62,31 @@ export const GET: APIRoute = async (context) => {
   );
 };
 
+function encodeEventsToBase64(body) {
+  // 1. Stringify the events object
+  const eventsString = JSON.stringify(body.events);
+
+  // 2. Use TextEncoder to convert the string to a Uint8Array
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(eventsString);
+
+  // 3. Use btoa() to convert the Uint8Array to base64 encoded string
+  const base64String = btoa(String.fromCharCode(...bytes));
+
+  return base64String;
+}
+
 export const POST: APIRoute = async ({ request, locals }) => {
   // const Buffer = await getBuffer();
   const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = getEnvs(locals);
   const octokit = new Octokit({ auth: GITHUB_PAT });
 
   const body = await request.json();
-  const base64newSessions = Buffer.from(JSON.stringify(body.events)).toString(
-    "base64"
-  );
+  // const base64newSessions = Buffer.from(JSON.stringify(body.events)).toString(
+  //   "base64"
+  // );
+
+  const base64newSessions = encodeEventsToBase64(body);
 
   const originalFile = await octokit.request(
     "GET /repos/{owner}/{repo}/contents/{path}",
