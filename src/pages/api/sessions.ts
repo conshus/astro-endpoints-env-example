@@ -1,12 +1,17 @@
-declare const Buffer
+// declare const Buffer
+export const prerender = false;
 import type { APIRoute } from 'astro';
 // import { env } from '../../utils/env.js'
 // const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = env;
-const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = import.meta.env;
+// const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = import.meta.env;
+import { getEnvs } from "../../utils/env.js";
 import { Octokit } from "@octokit/core";
-const octokit = new Octokit({ auth: GITHUB_PAT });
+// const octokit = new Octokit({ auth: GITHUB_PAT });
 
-export const GET: APIRoute = async () => {
+export const GET: APIRoute = async (context) => {
+  const locals = context.locals;
+  const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = getEnvs(locals);
+  const octokit = new Octokit({ auth: GITHUB_PAT });
   const originalFile = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
       owner: GITHUB_USERNAME,
       repo: GITHUB_REPO,
@@ -16,8 +21,8 @@ export const GET: APIRoute = async () => {
       }
   });
 
-  const sessionsContent = Buffer.from(originalFile.data['content'], "base64").toString();
-
+  // const sessionsContent = Buffer.from(originalFile.data['content'], "base64").toString();
+  const sessionsContent = atob(originalFile.data["content"]);
 
   return new Response(
     JSON.stringify({
@@ -26,11 +31,27 @@ export const GET: APIRoute = async () => {
   );
 };
 
+function encodeEventsToBase64(body) {
+  // 1. Stringify the events object
+  const eventsString = JSON.stringify(body.events);
 
-export const POST: APIRoute = async ({ request }) => {
+  // 2. Use TextEncoder to convert the string to a Uint8Array
+  const encoder = new TextEncoder();
+  const bytes = encoder.encode(eventsString);
+
+  // 3. Use btoa() to convert the Uint8Array to base64 encoded string
+  const base64String = btoa(String.fromCharCode(...bytes));
+
+  return base64String;
+}
+
+export const POST: APIRoute = async ({ request, locals }) => {
+  const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = getEnvs(locals);
+  const octokit = new Octokit({ auth: GITHUB_PAT });
+
   const body = await request.json();
-  const base64newSessions = Buffer.from(JSON.stringify(body.events)).toString('base64');
-
+  // const base64newSessions = Buffer.from(JSON.stringify(body.events)).toString('base64');
+  const base64newSessions = encodeEventsToBase64(body);
   const originalFile = await octokit.request('GET /repos/{owner}/{repo}/contents/{path}', {
     owner: GITHUB_USERNAME,
     repo: GITHUB_REPO,

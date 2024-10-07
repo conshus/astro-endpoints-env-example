@@ -5,7 +5,7 @@ export let env;
 if (import.meta.env.DEV){
     console.log("dev mode");
     // const isDenoDeploy = Deno.env.get("DENO_DEPLOYMENT_ID") !== undefined;
-    console.log(process.env)
+    // console.log(process.env)
     env = import.meta.env;
 } else if (CF_PAGES){
     // check for Cloudflare (could also be process.env or context.env )
@@ -22,5 +22,18 @@ if (import.meta.env.DEV){
 
     env = process.env
 }
+
+
+export function getEnvs(locals, context) {
+    console.log("function getEnvs!!");
+    if (import.meta.env.DEV) {
+      console.log("in development mode");
+      console.log({ locals, context });
+      return import.meta.env;
+    } else if (locals.runtime.env.CF_PAGES) {
+      console.log("on cloudflare");
+      return locals.runtime.env;
+    }
+  }
 
 // export env
