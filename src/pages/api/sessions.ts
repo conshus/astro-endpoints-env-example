@@ -9,6 +9,7 @@ import { Octokit } from "@octokit/core";
 // const octokit = new Octokit({ auth: GITHUB_PAT });
 
 export const GET: APIRoute = async (context) => {
+  console.log("context: ", context);
   const locals = context.locals;
   const { GITHUB_PAT, GITHUB_USERNAME, GITHUB_REPO } = getEnvs(locals);
   const octokit = new Octokit({ auth: GITHUB_PAT });
