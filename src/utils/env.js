@@ -2,6 +2,8 @@
 let CF_PAGES, Deno;
 export let env;
 
+
+
 if (Deno !== undefined){
   const denoenv = Deno.env.toObject();
   console.log("denoenv:", denoenv);
@@ -32,6 +34,7 @@ if (import.meta.env.DEV){
 
 export function getEnvs(locals, context) {
     console.log("function getEnvs!!");
+    console.log("Deno: ", Deno);
     if (import.meta.env.DEV) {
       console.log("in development mode");
       console.log({ locals, context });
