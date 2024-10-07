@@ -43,10 +43,11 @@ export function getEnvs(locals, context) {
       console.log("in development mode");
       console.log({ locals, context });
       return import.meta.env;
-    } else if (locals.runtime.env.CF_PAGES) {
+    } else if (locals) {
       console.log("on cloudflare");
       return locals.runtime.env;
     } else {
+      console.log("everywhere else");
       return process.env;
     }
   }
