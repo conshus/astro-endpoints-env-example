@@ -46,6 +46,8 @@ export function getEnvs(locals, context) {
     } else if (locals.runtime.env.CF_PAGES) {
       console.log("on cloudflare");
       return locals.runtime.env;
+    } else {
+      return process.env;
     }
   }
 
