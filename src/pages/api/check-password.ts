@@ -44,6 +44,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
   return new Response(
     JSON.stringify({
       authorized,
+      ADMIN_PASSWORD
     })
   );
 };
