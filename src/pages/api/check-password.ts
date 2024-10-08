@@ -26,8 +26,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const role = data.role.toLowerCase();
   let authorized = false;
   // const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
-  // const {  HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
-  const env { HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
+  const {  HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
+  const env = getEnvs(locals);
   const ADMIN_PASSWORD = "test password"
   switch (role) {
     case 'admin':
