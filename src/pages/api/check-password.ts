@@ -9,8 +9,8 @@ import { getEnvs } from "../../utils/env.js";
 
 
 export const GET: APIRoute = (context) => {
-  const locals = context.locals;
-  const env = getEnvs(locals);
+  // const locals = context.locals;
+  // const env = getEnvs(locals);
 
   return new Response(
     JSON.stringify({
