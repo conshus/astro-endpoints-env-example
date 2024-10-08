@@ -15,6 +15,7 @@ export const GET: APIRoute = (context) => {
   return new Response(
     JSON.stringify({
       greeting: 'Hello',
+      context
     })
   );
 };
