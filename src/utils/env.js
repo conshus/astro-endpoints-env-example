@@ -31,8 +31,13 @@ export function getEnvs(locals, context) {
       console.log({ locals, context });
       return import.meta.env;
     } else if (locals && Object.keys(locals).length !== 0 && JSON.stringify(locals) !== '{}') {
-      console.log("on cloudflare");
-      return locals.runtime.env;
+      if (locals.runtime) {
+        console.log("on cloudflare");
+        return locals.runtime.env;
+      } else if (locals.netlify) {
+        console.log("on netlify");
+        return locals.netlify.context;
+      }
     } else {
       console.log("everywhere else");
       return process.env;
