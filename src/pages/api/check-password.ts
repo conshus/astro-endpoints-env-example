@@ -25,8 +25,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const password = data.password;
   const role = data.role.toLowerCase();
   let authorized = false;
-  const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
-
+  // const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
+  // const {  HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
+  const env { HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
+  const ADMIN_PASSWORD = "test password"
   switch (role) {
     case 'admin':
       authorized = password === ADMIN_PASSWORD;
@@ -44,7 +46,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
   return new Response(
     JSON.stringify({
       authorized,
-      ADMIN_PASSWORD
+      ADMIN_PASSWORD,
+      env
     })
   );
 };

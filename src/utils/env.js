@@ -29,6 +29,7 @@ export function getEnvs(locals, context) {
     if (import.meta.env.DEV) {
       console.log("in development mode");
       console.log({ locals, context });
+      console.log(locals.netlify.context);
       return import.meta.env;
     } else if (locals && Object.keys(locals).length !== 0 && JSON.stringify(locals) !== '{}') {
       if (locals.runtime) {
