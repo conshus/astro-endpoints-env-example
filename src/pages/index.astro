@@ -2,17 +2,18 @@
 import Layout from '../layouts/Layout.astro';
 import Card from '../components/Card.astro';
 
-import { GET } from './api/check-password.ts';
-console.log("DB_PASSWORD: ", import.meta.env.DB_PASSWORD);
+// import { GET } from './api/check-password.ts';
+// console.log("DB_PASSWORD: ", import.meta.env.DB_PASSWORD);
 
-let response = await GET(Astro)
-const data = await response.json()
+// let response = await GET(Astro)
+// const data = await response.json()
 
 ---
 
 <Layout title="Welcome to Astro.">
 	<main>
-	<h1>{data.greeting} world!</h1>
+		<h1>This works?</h1>
+	<!-- <h1>{data.greeting} world!</h1> -->
 		<!-- <svg
 			class="astro-a"
 			width="495"
