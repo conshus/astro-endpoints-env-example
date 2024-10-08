@@ -9,9 +9,9 @@ import { getEnvs } from "../../utils/env.js";
 
 
 export const GET: APIRoute = (context) => {
-  // const locals = context.locals;
-  // const env = getEnvs(locals);
-  const env = process.env
+  const locals = context.locals;
+  const env = getEnvs(locals);
+  // const env = process.env
 
   return new Response(
     JSON.stringify({
@@ -28,10 +28,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const password = data.password;
   const role = data.role.toLowerCase();
   let authorized = false;
-  // const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
-  const {  HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
+  const { ADMIN_PASSWORD, HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
+  // const {  HOST_PASSWORD, GUEST_PASSWORD } = getEnvs(locals);
   const env = getEnvs(locals);
-  const ADMIN_PASSWORD = "test password"
+  // const ADMIN_PASSWORD = "test password"
   switch (role) {
     case 'admin':
       authorized = password === ADMIN_PASSWORD;

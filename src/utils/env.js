@@ -30,15 +30,18 @@ export function getEnvs(locals, context) {
       console.log("in development mode");
       console.log({ locals, context });
       console.log(locals.netlify.context);
+      console.log("locals.runtime !== undefined: ",locals.runtime !== undefined)
+      console.log("locals.runtime: ",locals.runtime);
+
       return import.meta.env;
-    } else if (locals && Object.keys(locals).length !== 0 && JSON.stringify(locals) !== '{}') {
-      if (locals.runtime) {
+    } else if (locals && Object.keys(locals).length !== 0 && JSON.stringify(locals) !== '{}' && locals.runtime !== undefined) {
+      // if (locals.runtime) {
         console.log("on cloudflare");
         return locals.runtime.env;
-      } else if (locals.netlify) {
-        console.log("on netlify");
-        return locals.netlify.context;
-      }
+      // } else if (locals.netlify) {
+        // console.log("on netlify");
+        // return locals.netlify.context;
+      // }
     } else {
       console.log("everywhere else");
       return process.env;
