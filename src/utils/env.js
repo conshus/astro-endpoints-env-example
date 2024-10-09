@@ -38,7 +38,8 @@ export function getEnvs(locals, context) {
   } else if (
     locals &&
     Object.keys(locals).length !== 0 &&
-    JSON.stringify(locals) !== "{}"
+    JSON.stringify(locals) !== "{}" &&
+    locals.runtime !== undefined
   ) {
     console.log("on cloudflare");
     return locals.runtime.env;
