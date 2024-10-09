@@ -43,7 +43,7 @@ export function getEnvs(locals, context) {
       console.log("in development mode");
       console.log({ locals, context });
       return import.meta.env;
-    } else if (locals && Object.keys(locals).length !== 0 && JSON.stringify(locals) !== '{}') {
+    } else if (locals && Object.keys(locals).length !== 0 && JSON.stringify(locals) !== '{}' && locals.runtime !== undefined) {
       console.log("on cloudflare");
       return locals.runtime.env;
     } else {
